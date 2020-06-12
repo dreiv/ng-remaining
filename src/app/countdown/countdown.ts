@@ -4,10 +4,9 @@ export interface Duration {
   days: number;
   hours: number;
   minutes: number;
-  seconds: number;
 }
 
 export interface CountDown {
   status: Status;
-  remaining?: Duration;
+  duration?: Duration;
 }
