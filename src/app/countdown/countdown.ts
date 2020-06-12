@@ -9,5 +9,5 @@ export interface Duration {
 
 export interface CountDown {
   status: Status;
-  remaining: Duration;
+  remaining?: Duration;
 }

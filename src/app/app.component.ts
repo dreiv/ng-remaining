@@ -13,9 +13,11 @@ export class AppComponent implements OnInit {
   constructor(private countdownService: CountdownService) { }
 
   ngOnInit() {
-    const when = new Date();
-    when.setHours(when.getHours() + 3);
+    const start = new Date();
+    start.setMinutes(start.getMinutes() + 15);
+    const end = new Date();
+    end.setHours(end.getHours() + 1, end.getMinutes() + 5);
 
-    this.countdown$ = this.countdownService.countdown$(when);
+    this.countdown$ = this.countdownService.countdown$(start, end);
   }
 }
