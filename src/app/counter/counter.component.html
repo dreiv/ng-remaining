@@ -1,5 +1,3 @@
-{{ duration | json }}
-
-<div *ngIf="duration.days">{{ duration.days }} days</div>
-<div *ngIf="duration.hours">{{ duration.hours }} hours</div>
-<div *ngIf="duration.minutes">{{ duration.minutes }} minutes</div>
+<span *ngIf="duration.days">{{ duration.days }} days</span>
+<span *ngIf="duration.hours"> {{ duration.hours }} hours</span>
+<span *ngIf="duration.minutes"> {{ duration.minutes }} minutes</span>

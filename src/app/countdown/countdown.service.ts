@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { timer, Observable } from 'rxjs';
+import { timer, Observable, merge, of } from 'rxjs';
 import { scan, takeWhile, map, tap, count } from 'rxjs/operators';
 
 import { CountDown } from './countdown';
 import { diffToCountdown } from './diffToCountdown';
 
-const getSecondsDifference = (date: number, subtractor: number) =>
-  Math.floor((date - subtractor) / 1000)
+const secondsMs = 60000;
+
+const getSecondsDifference = (date: Date, subtractor: Date) =>
+  Math.floor((date.getTime() - subtractor.getTime()) / secondsMs)
 
 interface CountDifference {
   startDiff: number;
@@ -21,19 +23,22 @@ export class CountdownService {
   constructor() { }
 
   countdown$(start: Date, end: Date): Observable<CountDown> {
-    const now = new Date().getTime();
+    const now = new Date();
     const duration: CountDifference = {
-      startDiff: getSecondsDifference(start.getTime(), now),
-      endDiff: getSecondsDifference(end.getTime(), now)
+      startDiff: getSecondsDifference(start, now),
+      endDiff: getSecondsDifference(end, now)
     }
 
-    return timer(0, 1000).pipe(
-      scan(acc => ({
-        startDiff: --acc.startDiff,
-        endDiff: --acc.endDiff
-      }), duration),
+    return merge(
+      of(duration),
+      timer((60 - now.getSeconds()) * 1000, secondsMs).pipe(
+        scan(acc => ({
+          startDiff: --acc.startDiff,
+          endDiff: --acc.endDiff
+        }), duration)
+      )
+    ).pipe(
       map(diffToCountdown),
-      tap(console.log),
       takeWhile(countdown => countdown.status != 'done', true)
     )
   }
