@@ -1,5 +1,5 @@
 <h1>Remainding</h1>
 
 <ng-container *ngIf="countdown$ | async as remainding">
-  {{ remainding }}
+  {{ remainding | json }}
 </ng-container>
