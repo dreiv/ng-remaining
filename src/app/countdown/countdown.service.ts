@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { timer, Observable, merge, of } from 'rxjs';
-import { scan, takeWhile, map, tap, count } from 'rxjs/operators';
+import { scan, takeWhile, map } from 'rxjs/operators';
 
 import { CountDown } from './countdown';
 import { diffToCountdown } from './diffToCountdown';
 
-const secondsMs = 60000;
+const minutesMs = 60000;
 
-const getSecondsDifference = (date: Date, subtractor: Date) =>
-  Math.floor((date.getTime() - subtractor.getTime()) / secondsMs)
+const getMinutesDifference = (date: Date, subtractor: Date) =>
+  Math.floor((date.getTime() - subtractor.getTime()) / minutesMs)
 
 interface CountDifference {
   startDiff: number;
@@ -19,19 +19,16 @@ interface CountDifference {
   providedIn: 'root'
 })
 export class CountdownService {
-
-  constructor() { }
-
   countdown$(start: Date, end: Date): Observable<CountDown> {
     const now = new Date();
     const duration: CountDifference = {
-      startDiff: getSecondsDifference(start, now),
-      endDiff: getSecondsDifference(end, now)
+      startDiff: getMinutesDifference(start, now),
+      endDiff: getMinutesDifference(end, now)
     }
 
     return merge(
       of(duration),
-      timer((60 - now.getSeconds()) * 1000, secondsMs).pipe(
+      timer((60 - now.getSeconds()) * 1000, minutesMs).pipe(
         scan(acc => ({
           startDiff: --acc.startDiff,
           endDiff: --acc.endDiff

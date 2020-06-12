@@ -1,12 +1,12 @@
 import { CountDown, Duration } from './countdown';
 
-const dayS = 1440;
-const hourS = 60;
+const dayMins = 1440;
+const hourMins = 60;
 
 const toDaysHoursMinutes = (time: number): Duration => ({
-  days: Math.floor(time / dayS),
-  hours: Math.floor((time % dayS) / hourS),
-  minutes: Math.floor(time % hourS)
+  days: Math.floor(time / dayMins),
+  hours: Math.floor((time % dayMins) / hourMins),
+  minutes: Math.floor(time % hourMins)
 })
 
 export const diffToCountdown = ({ startDiff, endDiff }): CountDown => {
