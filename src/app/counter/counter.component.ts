@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Duration } from '../countdown/countdown';
 
 @Component({
@@ -6,13 +6,8 @@ import { Duration } from '../countdown/countdown';
   templateUrl: './counter.component.html',
   styleUrls: ['./counter.component.scss']
 })
-export class CounterComponent implements OnInit {
+export class CounterComponent {
   @Input()
   duration: Duration;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

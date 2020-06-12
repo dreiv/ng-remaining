@@ -1,21 +1,22 @@
 <h1>Remainding</h1>
 
-<ng-container *ngIf="countdown$ | async as remainding">
-  <ng-container [ngSwitch]="remainding.status">
-    <ng-container *ngSwitchCase="'remaining'">
-      Beggining in
+<ng-container
+  *ngIf="countdown$ | async as countdown"
+  [ngSwitch]="countdown.status"
+>
+  <ng-container *ngSwitchCase="'remaining'">
+    Beggining in
 
-      <app-counter [duration]="remainding.duration"></app-counter>
-    </ng-container>
+    <app-counter [duration]="countdown.duration"></app-counter>
+  </ng-container>
 
-    <ng-container *ngSwitchCase="'started'">
-      Ending in
+  <ng-container *ngSwitchCase="'started'">
+    Ending in
 
-      <app-counter [duration]="remainding.duration"></app-counter>
-    </ng-container>
+    <app-counter [duration]="countdown.duration"></app-counter>
+  </ng-container>
 
-    <ng-container *ngSwitchCase="'done'">
-      Done!
-    </ng-container>
+  <ng-container *ngSwitchCase="'done'">
+    Done!
   </ng-container>
 </ng-container>

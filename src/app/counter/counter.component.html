@@ -1,3 +1,11 @@
-<span *ngIf="duration.days">{{ duration.days }} days</span>
-<span *ngIf="duration.hours"> {{ duration.hours }} hours</span>
-<span *ngIf="duration.minutes"> {{ duration.minutes }} minutes</span>
+<ng-container *ngIf="duration.days">
+  {{ duration.days }} days
+</ng-container>
+
+<ng-container *ngIf="duration.hours">
+  {{ duration.hours }} hours
+</ng-container>
+
+<ng-container *ngIf="duration.minutes">
+  {{ duration.minutes }} minutes
+</ng-container>
