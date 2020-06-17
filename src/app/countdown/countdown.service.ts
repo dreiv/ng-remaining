@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
-import { timer, Observable, merge, of } from 'rxjs';
-import { scan, takeWhile, map } from 'rxjs/operators';
+import { timer, Observable, merge, of, fromEvent, empty } from 'rxjs';
+import { scan, takeWhile, map, filter, tap, mergeMap, switchMap, } from 'rxjs/operators';
 
 import { CountDown } from './countdown';
 import { diffToCountdown } from './diffToCountdown';
 
-const minutesMs = 60000;
+const minutesAsMS = 60000;
 
-const getMinutesDifference = (date: Date, subtractor: Date) =>
-  Math.floor((date.getTime() - subtractor.getTime()) / minutesMs)
+const getDifferenceInMinutes = (date: Date, subtractor: Date) =>
+  Math.ceil((date.getTime() - subtractor.getTime()) / minutesAsMS);
+
+const getRemainingMSInMinute = (date: Date) =>
+  (59 - date.getSeconds()) * 1000 + 1000 - date.getMilliseconds();
 
 interface CountDifference {
   startDiff: number;
@@ -20,15 +23,19 @@ interface CountDifference {
 })
 export class CountdownService {
   countdown$(start: Date, end: Date): Observable<CountDown> {
-    const now = new Date();
-    const duration: CountDifference = {
-      startDiff: getMinutesDifference(start, now),
-      endDiff: getMinutesDifference(end, now)
+    const getDiffFromNow = () => {
+      const now = new Date();
+      const duration: CountDifference = {
+        startDiff: getDifferenceInMinutes(start, now),
+        endDiff: getDifferenceInMinutes(end, now)
+      }
+
+      return { duration, delay: getRemainingMSInMinute(now) }
     }
 
-    return merge(
+    const getTime$ = ({ duration, delay }) => merge(
       of(duration),
-      timer((60 - now.getSeconds()) * 1000, minutesMs).pipe(
+      timer(delay, minutesAsMS).pipe(
         scan(acc => ({
           startDiff: --acc.startDiff,
           endDiff: --acc.endDiff
@@ -37,6 +44,17 @@ export class CountdownService {
     ).pipe(
       map(diffToCountdown),
       takeWhile(countdown => countdown.status != 'done', true)
+    )
+
+    return merge(
+      of(1),
+      fromEvent(document, 'visibilitychange').pipe(
+        filter(() => document.visibilityState === 'visible')
+      )
+    ).pipe(
+      map(getDiffFromNow),
+      switchMap(getTime$),
+      tap(console.log)
     )
   }
 }
