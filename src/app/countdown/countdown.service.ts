@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { timer, Observable, merge, of, fromEvent, empty } from 'rxjs';
-import { scan, takeWhile, map, filter, tap, mergeMap, switchMap, } from 'rxjs/operators';
+import { timer, Observable, merge, of, fromEvent } from 'rxjs';
+import { scan, takeWhile, map, filter, tap, switchMap, distinctUntilChanged, } from 'rxjs/operators';
 
 import { CountDown } from './countdown';
 import { diffToCountdown } from './diffToCountdown';
@@ -12,6 +12,12 @@ const getDifferenceInMinutes = (date: Date, subtractor: Date) =>
 
 const getRemainingMSInMinute = (date: Date) =>
   (59 - date.getSeconds()) * 1000 + 1000 - date.getMilliseconds();
+
+const compareCountDown = (a: CountDown, b: CountDown) =>
+  a.status === b.status &&
+  a.duration.days === b.duration.days &&
+  a.duration.hours === b.duration.hours &&
+  a.duration.minutes === b.duration.minutes
 
 interface CountDifference {
   startDiff: number;
@@ -54,7 +60,7 @@ export class CountdownService {
     ).pipe(
       map(getDiffFromNow),
       switchMap(getTime$),
-      tap(console.log)
+      distinctUntilChanged(compareCountDown)
     )
   }
 }
